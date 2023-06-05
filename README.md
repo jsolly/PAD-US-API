@@ -1,5 +1,8 @@
 # PAD-US-API
 
+# Introduction
+Welcome to the PAD-US-API repository! This repository contains a Django-based API for interacting with the Protected Area Database (PAD-US). The API provides two views: `AOI_IntersectView` and `AOI_IntersectViewOverlap`. The first view retrieves data from the ArcGIS API based on an Area of Interest (AOI) specified in the request parameters. The second view calculates the area of intersected features and the percentage of the total AOI based on the AOI and intersected features specified in the request parameters. Please refer to the code and comments for more detailed usage instructions.
+
 # Installation
 1. Clone the repository
 ```shell
