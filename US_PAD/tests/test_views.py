@@ -1,56 +1,55 @@
+from .base import SetUp
 from django.test import TestCase, Client
 from django.urls import reverse
 import json
-
-
+import os
 class AOI_IntersectViewTests(TestCase):
 
-    AOI_1 = {
-        "rings" : [[
-            [-119.63833, 37.765101], 
-            [-119.63833, 37.965101], 
-            [-119.43833, 37.965101], 
-            [-119.43833, 37.765101], 
-            [-119.63833, 37.765101]
-        ]]
-    }
-        
-    AOI_2 = {
-        "rings" : [[
-            [-124.104631, 41.113181], 
-            [-124.104631, 41.313181], 
-            [-123.904631, 41.313181], 
-            [-123.904631, 41.113181], 
-            [-124.104631, 41.113181]
-        ]]
-    }
-
-    AOI_3 = {
-        "rings" : [[
-            [-119.869163, 33.896074], 
-            [-119.869163, 34.096074], 
-            [-119.669163, 34.096074], 
-            [-119.669163, 33.896074], 
-            [-119.869163, 33.896074]
-        ]]
-    }
 
     def setUp(self):
         self.client = Client()
+        self.base_dir = os.path.dirname(os.path.abspath(__file__))
+
+        with open(os.path.join(self.base_dir, 'AOI_Yosemite.json')) as f:
+            self.AOI_Yosemite = json.load(f)
+
+        with open(os.path.join(self.base_dir, 'AOI_Unprotected.json')) as f: # Middle of the Atlantic Ocean
+            self.AOI_Unprotected = json.load(f)
 
     def test_no_aoi(self):
-        response = self.client.post(reverse('padAPI'))
+        url = reverse('aoi-intersect')
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(str(response.content, encoding='utf8'), {"error": "aoi parameter is required"})
 
-    def test_single_aoi(self):
-        response = self.client.post(reverse('padAPI'), {"aois": [self.AOI_1]}, content_type='application/json')
-        self.assertEqual(response.status_code, 200)
-        expected_ids = ['expected_id1', 'expected_id2']
-        self.assertJSONEqual(str(response.content, encoding='utf8'), expected_ids)
+    def test_get_intersected_features_for_single_aoi(self):
+        url = reverse('aoi-intersect')
+        params = {"aoi": json.dumps(self.AOI_Yosemite)}
+        response = self.client.get(url, params)
 
-    def test_multiple_aoi(self):
-        response = self.client.post(reverse('padAPI'), {"aois": [self.AOI_1, self.AOI_2, self.AOI_3]}, content_type='application/json')
         self.assertEqual(response.status_code, 200)
-        expected_ids = ['expected_id1', 'expected_id2', 'expected_id3']
-        self.assertJSONEqual(str(response.content, encoding='utf8'), expected_ids)
+        self.assertEqual(len(response.json()), 2) # There should be two features that overlap the AOI
+
+    def test_get_no_features_for_unprotected_aoi(self):
+        url = reverse('aoi-intersect')
+        params = {"aoi": json.dumps(self.AOI_Unprotected)}
+        response = self.client.get(url, params)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 0)
+
+    def test_get_overlap_percentage_for_single_aoi(self):
+        url = reverse('aoi-overlap')
+        intersected_features = []
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        with open(os.path.join(base_dir,'protected_area_1.json')) as f:
+            intersected_features.append(json.load(f))
+
+        with open(os.path.join(base_dir,'protected_area_2.json')) as f:
+            intersected_features.append(json.load(f))
+
+        params = {"aoi": json.dumps(self.AOI_Yosemite), "intersected_features": json.dumps(intersected_features)}
+        response = self.client.get(url, params)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(str(response.content, encoding='utf8'), {'Yosemite National Park': {'FED': 100}})

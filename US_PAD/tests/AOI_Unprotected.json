@@ -1,0 +1,31 @@
+{
+  "objectIdFieldName": "OBJECTID",
+  "uniqueIdField": {
+    "name": "OBJECTID",
+    "isSystemMaintained": true
+  },
+  "globalIdFieldName": "",
+  "geometryType": "esriGeometryPolygon",
+  "spatialReference": {
+    "wkid": 4326,
+    "latestWkid": 4326
+  },
+  "features": [
+    {
+      "attributes": {
+        "Name": "Area Not in Protected Region"
+      },
+      "geometry": {
+        "rings": [
+          [
+            [-30.00000, 0.00000],
+            [-30.00000, 0.20000],
+            [-29.80000, 0.20000],
+            [-29.80000, 0.00000],
+            [-30.00000, 0.00000]
+          ]
+        ]
+      }
+    }
+  ]
+}

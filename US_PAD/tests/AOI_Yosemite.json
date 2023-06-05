@@ -1,0 +1,32 @@
+{
+    "objectIdFieldName": "OBJECTID",
+    "uniqueIdField": {
+      "name": "OBJECTID",
+      "isSystemMaintained": true
+    },
+    "globalIdFieldName": "",
+    "geometryType": "esriGeometryPolygon",
+    "spatialReference": {
+      "wkid": 4326,
+      "latestWkid": 4326
+    },
+    "features": [
+      {
+        "attributes": {
+          "Name": "Yosemite National Park"
+        },
+        "geometry": {
+          "rings": [
+            [
+              [-119.63833, 37.765101],
+              [-119.63833, 37.965101],
+              [-119.43833, 37.965101],
+              [-119.43833, 37.765101],
+              [-119.63833, 37.765101]
+            ]
+          ]
+        }
+      }
+    ]
+  }
+  
