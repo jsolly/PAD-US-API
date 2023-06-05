@@ -1,0 +1,9 @@
+django
+requests
+
+"""
+Dev requirements
+"""
+black # code formatting
+python-dotenv # environment variables
+pytest
