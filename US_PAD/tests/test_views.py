@@ -1,9 +1,9 @@
 from .base import SetUp
-from django.test import TestCase, Client
+from django.test import Client
 from django.urls import reverse
 import json
 import os
-class AOI_IntersectViewTests(TestCase):
+class AOI_IntersectViewTests(SetUp):
 
 
     def setUp(self):

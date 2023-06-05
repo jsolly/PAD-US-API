@@ -1,7 +1,5 @@
-from django.shortcuts import render
 from django.http import JsonResponse
 from django.views import View
-from django.contrib.gis.measure import Area
 import json
 import requests
 from shapely.geometry import Polygon, MultiPolygon
@@ -10,7 +8,7 @@ from django.http import HttpResponse
 
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+    return HttpResponse("Welcome to the Protected Area Database API! Please refer to the Readme for usage instructions.")
 
 
 class AOI_IntersectView(View):

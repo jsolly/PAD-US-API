@@ -1,5 +1,6 @@
 django
 requests
+shapely
 
 """
 Dev requirements
@@ -7,3 +8,4 @@ Dev requirements
 black # code formatting
 python-dotenv # environment variables
 pytest
+ruff # linting

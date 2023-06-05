@@ -1,9 +1,8 @@
 from .base import SetUp
-from django.test import SimpleTestCase
 from django.urls import reverse, resolve
 from padApi import views
 import json
-class TestUrls(SimpleTestCase):
+class TestUrls(SetUp):
 
     def test_padApi_base_url_is_resolved(self):
         url = reverse('index')

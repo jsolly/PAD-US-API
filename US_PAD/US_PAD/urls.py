@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
+    path("", include("padApi.urls"), name="padApi"),
     path("padApi/", include("padApi.urls"), name="padApi"),
     path("admin/", admin.site.urls),
 ]
