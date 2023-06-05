@@ -32,7 +32,7 @@ $ python3 US_PAD/manage.py runserver
 2. Submit GET requests to
 ```shell
 http://localhost:8000/padapi/aoi-intersect // For a list of intersecting PAD-US areas of interest
-http://localhost:8000/padapi/aoi-overlap // For a list of overlapping PAD-US areas of interest
+http://localhost:8000/padapi/aoi-overlap // For a list of the management types and their area of overlap (in percentage) with the AOI
 ```
 See US_PAD/tests.py for example requests
 
