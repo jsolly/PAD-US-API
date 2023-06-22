@@ -3,32 +3,34 @@ from django.views import View
 import json
 import requests
 from shapely.geometry import Polygon, MultiPolygon
-# Create your views here.
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 
 def index(request):
     return HttpResponse("Welcome to the Protected Area Database API! Please refer to the Readme for usage instructions.")
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class AOI_IntersectView(View):
-    def get(self, request, *args, **kwargs):
-        # Retrieve AOI from request parameters
-        aoi = request.GET.get('aoi')
+    def post(self, request, *args, **kwargs):
+        # Parse the JSON body of the request
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
+        
+        # Retrieve AOI from the data
+        aoi = data.get('aoi')
         if not aoi:
             return JsonResponse({"error": "aoi parameter is required"}, status=400)
-
-        # Parse the AOI from JSON
-        try:
-            aoi = json.loads(aoi)
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid AOI JSON"}, status=400)
 
         # Construct the ArcGIS API URL
         url = "https://services.arcgis.com/v01gqwM5QqNysAAi/arcgis/rest/services/Protection_Status_by_GAP_Status_Code/FeatureServer/0/query"
 
         # Define the parameters for the request
-        spatial_reference = json.dumps(aoi["spatialReference"]["wkid"])
+        spatial_reference = aoi["spatialReference"]["wkid"]
         data = {
             "f": "json",
             "where": "1=1",
@@ -39,7 +41,6 @@ class AOI_IntersectView(View):
             "geometry": json.dumps(aoi["features"][0]["geometry"]),
             "spatialRel": "esriSpatialRelIntersects",
         }
-
 
         # Send the request to the ArcGIS API
         response = requests.post(url, data=data)
@@ -52,20 +53,21 @@ class AOI_IntersectView(View):
 
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class AOI_IntersectViewOverlap(View):
-    def get(self, request, *args, **kwargs):
-        # Retrieve AOI and intersected_features from request parameters
-        aoi_json = request.GET.get('aoi')
-        intersected_features_json = request.GET.get('intersected_features')
-        if not aoi_json or not intersected_features_json:
-            return JsonResponse({"error": "Both aoi and intersected_features parameters are required"}, status=400)
-
-        # Parse the AOI and intersected_features from JSON
+    def post(self, request, *args, **kwargs):
+        # Parse the JSON body of the request
         try:
-            aoi = json.loads(aoi_json)
-            intersected_features = json.loads(intersected_features_json)
+            data = json.loads(request.body)
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON"}, status=400)
+
+        # Retrieve AOI and intersected_features from the data
+        aoi = data.get('aoi')
+        intersected_features = data.get('intersected_features')
+
+        if not aoi or not intersected_features:
+            return JsonResponse({"error": "Both aoi and intersected_features parameters are required"}, status=400)
 
         # Create a MultiPolygon from the AOI
         aoi_geometry = aoi["features"][0]["geometry"]["rings"]

@@ -2,13 +2,12 @@ from .base import SetUp
 from django.urls import reverse, resolve
 from padApi import views
 import json
+
 class TestUrls(SetUp):
 
     def test_padApi_base_url_is_resolved(self):
         url = reverse('index')
         self.assertEqual(resolve(url).func, views.index)
-
-
 
     def test_aoi_intersect_url_is_resolved(self):
         url = reverse('aoi-intersect')
@@ -31,13 +30,8 @@ class TestUrls(SetUp):
             }]
         }
 
-        # Convert the AOI to a JSON string
-        aoi_json = json.dumps(aoi_mock)
+        aoi_json = json.dumps({'aoi': aoi_mock})
 
-        # Add the necessary 'aoi' data to the GET request
-        data = {
-            'aoi': aoi_json
-        }
-        
-        response = self.client.get(url, data)
+        # Send a POST request with the AOI as JSON in the request body
+        response = self.client.post(url, data=aoi_json, content_type='application/json')
         self.assertEqual(response.status_code, 200)
