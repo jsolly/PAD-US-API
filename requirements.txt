@@ -1,7 +1,6 @@
 django
 requests
 shapely
-
 """
 Dev requirements
 """
@@ -9,3 +8,12 @@ black # code formatting
 python-dotenv # environment variables
 pytest
 ruff # linting
+
+"""
+Demo requirements
+"""
+geopandas
+matplotlib
+branca
+folium
+mapclassify
